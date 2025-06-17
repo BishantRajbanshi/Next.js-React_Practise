@@ -1,0 +1,18 @@
+import Link from "next/link";
+
+export default function Navbar(){
+  return(
+    <nav>
+      <div className="flex justify-between items-center h-16 bg-black text-white fixed w-full px-8 font-mono">
+        <div>
+          <h1 className="text-2xl font-bold items-center">Logo</h1>
+        </div>
+        <div className="flex gap-4 items-center">
+        <Link href="/">Home page</Link>
+        <Link href="/about">About page</Link>
+        <Link href="/contact">Contact page</Link>
+      </div>
+      </div>
+    </nav>
+  )
+}
