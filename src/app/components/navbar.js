@@ -12,6 +12,7 @@ export default function Navbar(){
         <Link href="/about">About page</Link>
         <Link href="/contact">Contact page</Link>
         <Link href="/settings">Settings</Link>
+        <Link href="/User-form">User-from</Link>
       </div>
       </div>
     </nav>
