@@ -9,10 +9,11 @@ export default function Navbar(){
         </div>
         <div className="flex gap-4 items-center">
         <Link href="/">Home page</Link>
-        <Link href="/about">About page</Link>
+        <Link href="/About">About page</Link>
         <Link href="/contact">Contact page</Link>
         <Link href="/settings">Settings</Link>
         <Link href="/User-form">User-from</Link>
+        <Link href="/Task-Tracker">TaskTracker</Link>
       </div>
       </div>
     </nav>
