@@ -2,7 +2,8 @@
 import { useState } from "react";
 
 export default function TaskTracker() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState([
+]);
   const [task, setTask] = useState('');
 
   const createTask = () => {
@@ -10,7 +11,6 @@ export default function TaskTracker() {
       const newTask = {
         id: tasks.length + 1,
         text: task,
-        done: false
       };
       setTasks([...tasks, newTask]);
       setTask('');
