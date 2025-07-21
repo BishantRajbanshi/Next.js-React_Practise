@@ -1,9 +1,11 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 export default function Products(){
   const [products, setProducts] = useState([]);
   const [Title, setTitle] = useState('');
   const [Price, setPrice] = useState('');
+  const [editingProductId, setEditingProductId] = useState(null);
+  
   
   // Fetch products from the API
   const fetchProducts = async () => {
@@ -26,6 +28,35 @@ export default function Products(){
     setTitle('');
     setPrice('');
   }
+
+  // Edit a product
+  const editProduct = async (id) => {
+    setEditingProductId(id);
+    const product = products.find((product) => product.id === id);
+    setTitle(product.Title);
+    setPrice(product.Price);
+  }
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // Update a product
+  const updateProduct = async (id) => {
+    const response = await fetch(`http://localhost:8000/api/products/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({ Title, Price }),
+    });
+    const data = await response.json();
+    setProducts(products.map((product) => (product.id === id ? data : product)));
+    setTitle('');
+    setPrice('');
+    setEditingProductId(null);
+  }
+
   // Delete a product
   const deleteProduct = async (id) => {
     const response = await fetch(`http://localhost:8000/api/products/${id}`, {
@@ -42,6 +73,7 @@ export default function Products(){
   useEffect(() => {
     fetchProducts(); 
   }, []);
+
   return (
     <div className="max-w-2xl mx-auto p-8">
       <h1 className="text-3xl font-bold mb-8 text-center">Products Page</h1>
@@ -60,23 +92,40 @@ export default function Products(){
           value={Price}
           onChange={(e) => setPrice(e.target.value)}
         />
-        <button 
+
+        {editingProductId ? (
+          <button 
+            className='bg-green-500 hover:bg-blue-600 transition text-white p-2 rounded w-full sm:w-auto' 
+            onClick={ () => updateProduct(editingProductId)}
+          >
+            Edit Product
+          </button>
+        ) : (<button 
           className='bg-blue-500 hover:bg-blue-600 transition text-white p-2 rounded w-full sm:w-auto' 
-          onClick={addProduct}
+          onClick={() => addProduct}
         >
           Add Product
-        </button>
+        </button>)}
+
       </div>
       <ul className="space-y-4">
         {products.map((product) => (
           <li key={product.id} className="border rounded-lg p-4 flex items-center justify-between shadow-sm hover:shadow-md transition">
             <span className="font-medium">{product.Title} - ${product.Price}</span>
-            <button 
-              className='bg-red-500 hover:bg-red-600 transition text-white p-2 rounded' 
-              onClick={() => deleteProduct(product.id)}
-            >
-              Delete
-            </button>
+            <div className="flex gap-2">
+              <button 
+                className='bg-yellow-500 hover:bg-yellow-600 transition text-white p-2 rounded' 
+                onClick={() => editProduct(product.id)}
+              >
+                Edit
+              </button>
+              <button 
+                className='bg-red-500 hover:bg-red-600 transition text-white p-2 rounded' 
+                onClick={() => deleteProduct(product.id)}
+              >
+                Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>
