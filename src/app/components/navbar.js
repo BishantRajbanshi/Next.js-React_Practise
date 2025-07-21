@@ -15,7 +15,6 @@ export default function Navbar(){
         <Link href="/settings">Settings</Link>
         <Link href="/User-form">User-form</Link>
         <Link href="/Task-Tracker">Task-Tracker</Link>
-        <Link href="/todolist">ToDoList</Link>
       </div>
       </div>
     </nav>
