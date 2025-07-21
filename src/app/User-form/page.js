@@ -51,7 +51,7 @@ export default function Userform() {
         </div> 
       )}
 
-      <div classname="space-y-4">
+      <div className="space-y-4">
         <label htmlFor="Number" className='block text-sm font-medium text-gray-700'>Your Number</label>
         <input
         id="Number"

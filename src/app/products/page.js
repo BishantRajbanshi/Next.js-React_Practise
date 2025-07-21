@@ -5,14 +5,15 @@ export default function Products(){
   const [Title, setTitle] = useState('');
   const [Price, setPrice] = useState('');
   const [editingProductId, setEditingProductId] = useState(null);
-  
-  
+  const [validationError, setValidationError] = useState({});
+
   // Fetch products from the API
   const fetchProducts = async () => {
     const response = await fetch ('http://localhost:8000/api/products');
     const data = await response.json();
     setProducts(data);
   }
+
   // Add a new product
   const addProduct = async () => {
     const response = await fetch('http://localhost:8000/api/products', {
@@ -23,10 +24,16 @@ export default function Products(){
       },
       body: JSON.stringify({ Title, Price}),
     });
+    console.log(response.status);
     const data = await response.json();
-    setProducts([...products, data]);
-    setTitle('');
-    setPrice('');
+    if (response.ok) {
+      setProducts([...products, data]);
+      setTitle('');
+      setPrice('');
+      setValidationError({});
+    } else {
+      setValidationError(data.errors);
+    }
   }
 
   // Edit a product
@@ -51,10 +58,14 @@ export default function Products(){
       body: JSON.stringify({ Title, Price }),
     });
     const data = await response.json();
+    if (response.ok) {
     setProducts(products.map((product) => (product.id === id ? data : product)));
     setTitle('');
     setPrice('');
-    setEditingProductId(null);
+    setEditingProductId(null);}
+    else {
+      setValidationError(data.errors);
+    }
   }
 
   // Delete a product
@@ -85,6 +96,7 @@ export default function Products(){
           value={Title}
           onChange={(e) => setTitle(e.target.value)}
         />
+        {validationError.Title && <p className='text-red-500'>{validationError.Title}</p>}
         <input 
           className='border p-2 rounded w-full sm:w-auto' 
           type="number" 
@@ -92,7 +104,7 @@ export default function Products(){
           value={Price}
           onChange={(e) => setPrice(e.target.value)}
         />
-
+        {validationError.Price && <p className='text-red-500'>{validationError.Price}</p>}
         {editingProductId ? (
           <button 
             className='bg-green-500 hover:bg-blue-600 transition text-white p-2 rounded w-full sm:w-auto' 
@@ -102,7 +114,7 @@ export default function Products(){
           </button>
         ) : (<button 
           className='bg-blue-500 hover:bg-blue-600 transition text-white p-2 rounded w-full sm:w-auto' 
-          onClick={() => addProduct}
+          onClick={() => addProduct()}
         >
           Add Product
         </button>)}
