@@ -6,6 +6,7 @@ export default function Products(){
   const [Price, setPrice] = useState('');
   const [editingProductId, setEditingProductId] = useState(null);
   const [validationError, setValidationError] = useState({});
+  const [sucessMessage, setSucessMessage] = useState('');
 
   // Fetch products from the API
   const fetchProducts = async () => {
@@ -31,6 +32,10 @@ export default function Products(){
       setTitle('');
       setPrice('');
       setValidationError({});
+      setSucessMessage('Product added successfully!');
+      setTimeout(() => {
+        setSucessMessage('');
+      }, 3000);
     } else {
       setValidationError(data.errors);
     }
@@ -62,28 +67,36 @@ export default function Products(){
     setProducts(products.map((product) => (product.id === id ? data : product)));
     setTitle('');
     setPrice('');
-    setEditingProductId(null);}
-    else {
-      setValidationError(data.errors);
-    }
+    setEditingProductId(null);
+    setSucessMessage('Product updated successfully!');
+    setTimeout(() => {
+      setSucessMessage('');
+    }, 3000);
+  } else {
+    setValidationError(data.errors);
   }
+}
 
   // Delete a product
   const deleteProduct = async (id) => {
-    const response = await fetch(`http://localhost:8000/api/products/${id}`, {
-      headers:{
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      method: 'DELETE',
-    });
-    const data = await response.json();
-    // setProducts([...products, data]);
-    setProducts(products.filter((product => product.id !== id)));
-  };
-  useEffect(() => {
-    fetchProducts(); 
-  }, []);
+  const response = await fetch(`http://localhost:8000/api/products/${id}`, {
+    headers:{
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    method: 'DELETE',
+  });
+
+  const text = await response.text();
+  const data = text ? JSON.parse(text) : {};
+
+  if (response.ok) {
+    setProducts(products.filter(product => product.id !== id));
+  } else {
+    console.error("Delete failed:", data);
+  }
+};
+
 
   return (
     <div className="max-w-2xl mx-auto p-8">
@@ -97,6 +110,7 @@ export default function Products(){
           onChange={(e) => setTitle(e.target.value)}
         />
         {validationError.Title && <p className='text-red-500'>{validationError.Title}</p>}
+        {sucessMessage && <p className='text-green-500'>{sucessMessage}</p>}
         <input 
           className='border p-2 rounded w-full sm:w-auto' 
           type="number" 
